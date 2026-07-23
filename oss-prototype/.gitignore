@@ -1,0 +1,8 @@
+# 大容量のONNXモデル（別途ダウンロード。yakhyo/face-parsing のReleasesから resnet18.onnx）
+models/
+# 計測の出力
+*.png
+*.txt
+
+# 再エクスポート用に取得した学習リポジトリ・重み(大容量)
+fp-repo/

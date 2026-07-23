@@ -1,0 +1,9 @@
+# .NET ビルド成果物
+bin/
+obj/
+
+# 大容量のONNXモデル(別途 yakhyo/face-parsing Releases から resnet18.onnx を models/ へ)
+models/
+
+# テスト出力
+*.png

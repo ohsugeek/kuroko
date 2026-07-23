@@ -1,0 +1,10 @@
+# .NET ビルド成果物・生成物（コミット対象外）
+bin/
+obj/
+
+# 実行時ログ
+kuroko-gui.log
+
+# Velopackパッケージング生成物
+publish/
+releases/

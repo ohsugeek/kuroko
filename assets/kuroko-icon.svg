@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="512" height="512" role="img" aria-label="Kuroko app icon">
+  <title>Kuroko</title>
+  <desc>生成り色の角丸地に、墨黒の黒子頭巾のシルエット。目もとに柿色のスリット。</desc>
+  <rect x="2" y="2" width="96" height="96" rx="22" fill="#F4F0E9"/>
+  <path d="M22 86 L22 48 C22 27 34 14 50 14 C66 14 78 27 78 48 L78 86 Z" fill="#1A1512"/>
+  <rect x="34" y="47" width="32" height="5" rx="2.5" fill="#D65A2E"/>
+</svg>
