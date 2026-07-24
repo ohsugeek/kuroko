@@ -2,10 +2,6 @@
 
 **[English](#english) ・ [日本語](#日本語)**
 
-<p align="center">
-  <img src="docs/images/gui.png" alt="Kuroko app window" width="720">
-</p>
-
 ---
 
 <a id="english"></a>
@@ -20,6 +16,10 @@ Meet, or Teams. It outputs a virtual camera, so in your meeting app you just **p
 
 The name comes from *kuroko* (黒子), the black-clad stage assistants of kabuki and bunraku
 theater: dressed in black, unseen themselves, they make the real performance possible.
+
+<p align="center">
+  <img src="docs/images/gui.png" alt="Kuroko app window (English UI)" width="720">
+</p>
 
 > **Before / After (real hair):**
 > <!-- Add your own webcam before/after images here, e.g.: -->
@@ -156,6 +156,10 @@ Kuroko は、Webカメラ映像の髪だけをリアルタイムに塗り替え�
 仮想カメラとして出力するので、会議アプリ側は **カメラを選ぶだけ**。プラグインは不要です。
 
 名前は歌舞伎・文楽の「黒子」から。黒をまとい、自らは見えずに本番を成立させる裏方に由来します。
+
+<p align="center">
+  <img src="docs/images/gui.ja.png" alt="Kuroko アプリ画面（日本語UI）" width="720">
+</p>
 
 > **Before / After（実際の髪）:**
 > <!-- ここに自分のWebカメラのBefore/After画像を追加してください。例: -->
