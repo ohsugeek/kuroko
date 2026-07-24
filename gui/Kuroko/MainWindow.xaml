@@ -37,6 +37,14 @@
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
                     <Ellipse x:Name="StatusDot" Width="8" Height="8" Fill="{StaticResource TextMutedBrush}" VerticalAlignment="Center"/>
                     <TextBlock x:Name="StatusText" Text="{DynamicResource S_status_disconnected}" FontSize="12" Foreground="{StaticResource TextSecondaryBrush}" Margin="6,0,10,0" VerticalAlignment="Center"/>
+                    <!-- 言語切替（トレイと同じ機能をUIにも搭載） -->
+                    <Button x:Name="LangButton" Style="{StaticResource WindowButton}" Content="&#x1F310;" FontSize="14"
+                            ToolTip="{DynamicResource S_lang_menu}" Click="LangButton_Click" WindowChrome.IsHitTestVisibleInChrome="True"/>
+                    <Popup x:Name="LangPopup" PlacementTarget="{Binding ElementName=LangButton}" Placement="Bottom" StaysOpen="False" AllowsTransparency="True">
+                        <Border Background="{StaticResource SurfaceBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="8" Margin="0,4,0,0">
+                            <StackPanel x:Name="LangList" MinWidth="140"/>
+                        </Border>
+                    </Popup>
                     <Button x:Name="MinimizeButton" Style="{StaticResource WindowButton}" Content="&#x2013;" Click="MinimizeButton_Click" WindowChrome.IsHitTestVisibleInChrome="True"/>
                     <Button x:Name="CloseButton" Style="{StaticResource WindowButton}" Content="&#x2715;" Click="CloseButton_Click" WindowChrome.IsHitTestVisibleInChrome="True"/>
                 </StackPanel>

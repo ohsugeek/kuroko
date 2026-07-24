@@ -352,6 +352,31 @@ public partial class MainWindow : Window
         CameraNameText.Foreground = HexToBrush("#F4F0E9");
     }
 
+    // タイトルバーの言語ボタン: 日本語/English を選ぶ小さなポップアップ（トレイの言語切替と同機能）
+    private void LangButton_Click(object sender, RoutedEventArgs e)
+    {
+        LangList.Children.Clear();
+        foreach (var opt in Loc.Available)
+        {
+            bool current = opt.Code == Loc.Current;
+            var row = new Border
+            {
+                Padding = new Thickness(12, 9, 12, 9), Cursor = Cursors.Hand, Background = Brushes.Transparent,
+                Child = new TextBlock
+                {
+                    // 現在の言語には先頭にチェックを付ける
+                    Text = (current ? "✓  " : "     ") + opt.Display,
+                    Foreground = HexToBrush(current ? "#F4F0E9" : "#A79F95"), FontSize = 13,
+                },
+            };
+            row.MouseEnter += (_, _) => row.Background = HexToBrush("#322C25");
+            row.MouseLeave += (_, _) => row.Background = Brushes.Transparent;
+            row.MouseLeftButtonUp += (_, _) => { LangPopup.IsOpen = false; ChangeLanguage(opt.Code); };
+            LangList.Children.Add(row);
+        }
+        LangPopup.IsOpen = true;
+    }
+
     private void CameraSelector_Click(object sender, MouseButtonEventArgs e)
     {
         CameraList.Children.Clear();
