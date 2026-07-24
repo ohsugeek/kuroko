@@ -1,123 +1,139 @@
-# Kuroko（黒子）
+<!-- Language: **English** | [日本語](README.ja.md) -->
 
-Web会議のときだけ、髪をリアルタイムに黒く（または好きな色に）見せるWindows常駐アプリ。
+# Kuroko （黒子）
 
-現実では自由に髪を染めながら、Zoom等の会議では落ち着いた髪色で映る——そのためのツールです。
-仮想カメラとして出力するので、会議アプリ側は「カメラを選ぶ」だけで使えます。
+**Recolor your hair in real time — but only on video calls.**
 
-名前は歌舞伎・文楽の「黒子」から。黒をまとい、自らは見えずに本番を成立させる裏方に由来します。
+Kuroko is a Windows tray app that repaints the hair in your webcam feed live, so you can
+dye your hair any color in real life yet still show up with a natural, calm look on Zoom,
+Meet, or Teams. It outputs a virtual camera, so in your meeting app you just **pick a camera** — no plugins.
 
-## 特徴
+The name comes from *kuroko* (黒子), the black-clad stage assistants of kabuki and bunraku
+theater: dressed in black, unseen themselves, they make the real performance possible.
 
-- **髪だけをAIで自動検出**して追従。手動マスクのように頭の動きでズレることがない
-- **自然な仕上がり**。髪本来の陰影・ツヤを残したまま色相と彩度だけを置き換える。
-  「発色」つまみ1本で、自然寄り⇄はっきり発色を連続的に調整できる
-- **GPU推論（DirectML）**。CUDA不要で、Windowsの多くのGPUで動作する
-- **全パラメータをライブ調整**。色・彩度・明度・発色・色相・検出しきい値・色ガイド・許容度・ぼかし
-- **プリセット**を2系統で保存（髪色のみ／フィルタ込みの全設定）
-- **タスクトレイ常駐**。Windows起動時の自動開始、仮想カメラが使われたときの自動開始・停止に対応
+<p align="center">
+  <img src="docs/images/gui.png" alt="Kuroko app window" width="720">
+</p>
 
-## 動作環境
+> **Before / After (real hair):**
+> <!-- Add your own webcam before/after images here, e.g.: -->
+> <!-- <img src="docs/images/before-after.png" alt="Before and after" width="720"> -->
+> _Coming soon — sample images of hair being recolored live._
 
-- Windows 10 / 11（x64）
-- DirectX 12 対応GPU（DirectML経由で推論。控えめなGPUでも動作する）
-- Webカメラ
-- 仮想カメラドライバ [UnityCapture](https://github.com/schellingb/UnityCapture)（MIT）の登録が必要
+## Features
 
-## 使い方
+- **AI hair detection.** Segments only the hair and tracks it as you move — no manual masks
+  that drift when you turn your head. (BiSeNet face-parsing, run on the GPU via ONNX Runtime + DirectML; no CUDA needed.)
+- **Natural recoloring.** Keeps the hair's own shading and shine, replacing only hue and
+  saturation. A single **"vividness"** slider blends continuously from natural to bold.
+- **Everything is live-adjustable** — color, saturation, brightness, vividness, hue,
+  detection threshold, color guide, tolerance, and edge feather.
+- **Presets** in two flavors: color-only, and full (color + all filter settings).
+- **Runs in the tray.** Optional start-on-boot and auto start/stop when a virtual camera is in use.
 
-1. UnityCapture の `Install/Install.bat` を管理者権限で実行し、「Unity Video Capture」を登録する
-2. Kuroko を起動し、カメラを選んで「開始」を押す
-3. 会議アプリ（Zoom等）のカメラ設定で **Unity Video Capture** を選ぶ
+## Requirements
 
-プレビューはアプリ内に表示され、「拡大」ボタンで別ウィンドウでも確認できます。
-表示されている映像が、そのまま相手に届く映像です。
+- Windows 10 / 11 (x64)
+- A DirectX 12 capable GPU (runs on modest GPUs via DirectML)
+- A webcam
+- The [UnityCapture](https://github.com/schellingb/UnityCapture) virtual-camera driver (MIT)
 
-## ソースからのビルド
+> The app UI is currently Japanese only. English UI is on the roadmap.
 
-必要なもの: .NET 10 SDK、Visual Studio または `dotnet` CLI。
+## Install
 
-```bash
-# 1) 髪セグメンテーションのモデルを配置する（大容量のためリポジトリには含まれない）
-#    yakhyo/face-parsing の Releases から resnet18.onnx を取得し、以下へ置く
-#    engine-cs/models/resnet18.onnx
-#    ※512入力版が必須。低解像度に再エクスポートした版では髪を検出できない
+1. Download **`Kuroko-win-Setup.exe`** from the [latest release](https://github.com/ohsugeek/kuroko/releases/latest) and run it.
+2. Install [UnityCapture](https://github.com/schellingb/UnityCapture) and run its `Install/Install.bat` as administrator to register "Unity Video Capture".
+3. Launch Kuroko, pick your camera, and click start.
+4. In your meeting app's camera setting, choose **Unity Video Capture**.
 
-# 2) エンジンとGUIをビルドする
-dotnet build engine-cs/KurokoEngine.csproj -c Release
-dotnet build gui/Kuroko/Kuroko.csproj -c Release
+Later versions update themselves from within the app (tray menu → check for updates).
 
-# 3) GUIを起動する（エンジンはGUIが自動で起動する）
-./gui/Kuroko/bin/Release/net10.0-windows/Kuroko.exe
-```
+## How it works
 
-インストーラの作成は `pwsh gui/Kuroko/publish.ps1 -Version <x.y.z>` で行います
-（詳細は [gui/Kuroko/RELEASE.md](gui/Kuroko/RELEASE.md)）。
-
-## 構成
-
-2プロセス構成です。エンジンがクラッシュしてもGUIが生き残るようにし、
-ネイティブ依存をGUIから隔離しています。
+Two processes. If the engine crashes, the GUI survives; native dependencies stay isolated
+from the UI.
 
 ```
-[カメラ] → KurokoEngine.exe (C#)                        → [Unity Video Capture] → Zoom等
-             ├ 髪セグメンテーション  BiSeNet face-parsing ONNX (ONNX Runtime + DirectML)
-             ├ 再着色              HSVブレンド＋色ガイド＋フェザー
-             └ 出力                UnityCapture 共有メモリ
-                    ↑ 名前付きパイプ \\.\pipe\kuroko（パラメータのライブ反映）
-                    ↓ 共有メモリ KurokoPreview（プレビュー映像）
+[camera] → KurokoEngine.exe (C#)                         → [Unity Video Capture] → Zoom, etc.
+             ├ hair segmentation  BiSeNet face-parsing ONNX (ONNX Runtime + DirectML)
+             ├ recolor            HSV blend + color guide + feather
+             └ output             UnityCapture shared memory
+                    ↑ named pipe  \\.\pipe\kuroko  (live parameter updates)
+                    ↓ shared mem  KurokoPreview     (preview frames)
            Kuroko.exe (WPF GUI)
 ```
 
-推論と出力をスレッド分離しているため、推論が18fpsでも出力は約30fpsを保ちます。
+Inference and output run on separate threads, so output stays around 30 fps even when
+inference runs at ~18 fps.
 
-### 再着色の考え方
+### The recoloring model
 
-単純に目標色で塗ると「塗り絵」のように不自然になります。Kurokoは元の明度 `V` の
-**比率**を保ったまま、目標色の明るさへどれだけ寄せるかを指数補間で決めます。
+Painting hair with a flat target color looks fake. Kuroko preserves the **ratio** of the
+original brightness `V` and only decides how far to push it toward the target color's
+brightness, via an exponential interpolation:
 
 ```
-新しい明度 = 元の明度 × (目標色の明度 / 髪の平均明度) ^ 発色
+new V = V × (target V / average hair V) ^ vividness
 ```
 
-`発色 = 0` なら元の陰影を完全保持（最も自然）、`1` なら目標色の明るさへ全振り
-（金髪・銀髪がはっきり出る）。指数補間なので、どの位置でも髪の明暗比＝質感が保たれます。
+At `vividness = 0` the original shading is fully preserved (most natural); at `1` it goes
+all the way to the target brightness (bold colors like blonde or silver show clearly).
+Because it's exponential, the hair's light-to-dark ratio — its texture — is kept at any setting.
 
-## Python版プロトタイプ（`src/`）
+## Build from source
 
-初期検討として MediaPipe Selfie Multiclass を使ったPython実装があります。
-現在の本番エンジンは C# 版（`engine-cs/`）で、Python版は**参考用**です。
+You need the .NET 10 SDK.
+
+```bash
+# 1) Place the hair-segmentation model (kept out of the repo; it is large).
+#    Get resnet18.onnx from yakhyo/face-parsing Releases and put it at:
+#      engine-cs/models/resnet18.onnx
+#    The 512-input version is required; lower-res re-exports fail to detect hair.
+
+# 2) Build the engine and the GUI.
+dotnet build engine-cs/KurokoEngine.csproj -c Release
+dotnet build gui/Kuroko/Kuroko.csproj -c Release
+
+# 3) Run the GUI (it launches the engine automatically).
+./gui/Kuroko/bin/Release/net10.0-windows/Kuroko.exe
+```
+
+To build an installer: `pwsh gui/Kuroko/publish.ps1 -Version <x.y.z>`
+(see [gui/Kuroko/RELEASE.md](gui/Kuroko/RELEASE.md)).
+
+## Python prototype (`src/`)
+
+An earlier proof of concept using MediaPipe Selfie Multiclass lives in `src/`. The
+production engine is the C# version (`engine-cs/`); the Python code is kept for reference.
 
 ```bash
 python -m venv venv
 ./venv/Scripts/pip install -r requirements.txt
-./venv/Scripts/python src/tune_gui.py   # パラメータ調整GUI
+./venv/Scripts/python src/tune_gui.py            # parameter-tuning GUI
 ./venv/Scripts/python src/main.py --preview-only
 ```
 
-MediaPipeのモデルは以下で取得します。
+## Limitations
 
-```bash
-curl -L -o models/selfie_multiclass_256x256.tflite \
-  "https://storage.googleapis.com/mediapipe-models/image_segmenter/selfie_multiclass_256x256/float32/latest/selfie_multiclass_256x256.tflite"
-```
+- Detection accuracy can drop under strong backlight or fast motion.
+- Capture is fixed at 720p (recoloring at 1080p is too CPU-heavy to hold 30 fps).
+- Windows only (the virtual camera uses DirectShow).
 
-## 既知の制約
+## Third-party components
 
-- 強い逆光や激しい動きでは検出精度が落ちることがある
-- 取り込みは720pに固定（1080pでの再着色はCPU負荷が高く30fpsを維持しにくいため）
-- 現状はWindows専用（仮想カメラにDirectShowを使うため）
-
-## サードパーティ
-
-| コンポーネント | 用途 | ライセンス |
+| Component | Purpose | License |
 |---|---|---|
-| [face-parsing](https://github.com/yakhyo/face-parsing) (BiSeNet) | 髪セグメンテーション | MIT |
-| [UnityCapture](https://github.com/schellingb/UnityCapture) | 仮想カメラ出力 | MIT |
-| ONNX Runtime (DirectML) | 推論 | MIT |
-| OpenCvSharp | 映像処理 | Apache-2.0 |
-| Velopack | 配布・自動更新 | MIT |
-| MediaPipe（Python版のみ） | セグメンテーション | Apache-2.0 |
+| [face-parsing](https://github.com/yakhyo/face-parsing) (BiSeNet) | Hair segmentation | MIT |
+| [UnityCapture](https://github.com/schellingb/UnityCapture) | Virtual camera output | MIT |
+| ONNX Runtime (DirectML) | Inference | MIT |
+| OpenCvSharp | Image processing | Apache-2.0 |
+| Velopack | Packaging & auto-update | MIT |
+| MediaPipe (Python prototype only) | Segmentation | Apache-2.0 |
 
-モデルの重みは学習データ（CelebAMask-HQ）の利用条件に従います。再配布や商用利用の前に
-各データセット・モデルのライセンスを確認してください。
+Model weights follow the terms of their training data (CelebAMask-HQ). Check the license of
+each dataset/model before redistribution or commercial use.
+
+## License
+
+[MIT](LICENSE) © 2026 Kenta Ohsugi
