@@ -27,9 +27,14 @@ public partial class MainWindow : Window
     private const int AutoStopGraceSeconds = 30;
     private WinForms.NotifyIcon? _tray;
     private WinForms.ToolStripMenuItem? _trayToggle;
+    private WinForms.ToolStripMenuItem? _miShow;
     private WinForms.ToolStripMenuItem? _miStartBoot;
     private WinForms.ToolStripMenuItem? _miTray;
     private WinForms.ToolStripMenuItem? _miAuto;
+    private WinForms.ToolStripMenuItem? _miUpdate;
+    private WinForms.ToolStripMenuItem? _miExit;
+    private WinForms.ToolStripMenuItem? _miLang;
+    private bool _connected;
     private bool _suppressSend;  // プリセット適用時など、まとめて同期するため個別送信を抑制する
     private int _cameraIndex = -1;
     private bool _running;
@@ -65,6 +70,7 @@ public partial class MainWindow : Window
         SetupTray();
         InitCameraDefault();
         ApplySettings();
+        ApplyLanguageTexts(); // 開始ボタン・状態表示などコード側テキストを現在言語で確定
         if (Environment.GetCommandLineArgs().Any(a => a == "--tray"))
         {
             _startHidden = true; // Windows起動時の自動開始はトレイに格納した状態で立ち上げる
@@ -95,20 +101,20 @@ public partial class MainWindow : Window
             BackColor = System.Drawing.Color.FromArgb(0x21, 0x1D, 0x18),
             ForeColor = System.Drawing.Color.FromArgb(0xF4, 0xF0, 0xE9),
         };
-        var miShow = new WinForms.ToolStripMenuItem("表示", null, (_, _) => ShowFromTray());
-        _trayToggle = new WinForms.ToolStripMenuItem("開始", null, (_, _) => ToggleFromTray());
-        _miStartBoot = new WinForms.ToolStripMenuItem("Windows起動時に自動開始") { CheckOnClick = true };
+        _miShow = new WinForms.ToolStripMenuItem(Loc.T("S_tray_show"), null, (_, _) => ShowFromTray());
+        _trayToggle = new WinForms.ToolStripMenuItem(Loc.T("S_start"), null, (_, _) => ToggleFromTray());
+        _miStartBoot = new WinForms.ToolStripMenuItem(Loc.T("S_tray_startboot")) { CheckOnClick = true };
         _miStartBoot.Click += (_, _) =>
         {
             _settings.Data.StartOnBoot = _miStartBoot.Checked;
             _settings.Save();
             StartupRegistry.Set(_miStartBoot.Checked);
         };
-        _miTray = new WinForms.ToolStripMenuItem("閉じたらトレイに格納") { CheckOnClick = true };
+        _miTray = new WinForms.ToolStripMenuItem(Loc.T("S_tray_mintray")) { CheckOnClick = true };
         _miTray.Click += (_, _) => { _settings.Data.MinimizeToTray = _miTray.Checked; _settings.Save(); };
-        _miAuto = new WinForms.ToolStripMenuItem("仮想カメラ利用時に自動開始・停止") { CheckOnClick = true };
+        _miAuto = new WinForms.ToolStripMenuItem(Loc.T("S_tray_autoact")) { CheckOnClick = true };
         _miAuto.Click += (_, _) => { _settings.Data.AutoActivate = _miAuto.Checked; _settings.Save(); ApplyAutoActivate(); };
-        var miUpdate = new WinForms.ToolStripMenuItem("アップデートを確認", null, async (_, _) =>
+        _miUpdate = new WinForms.ToolStripMenuItem(Loc.T("S_tray_update"), null, async (_, _) =>
         {
             var msg = await Updater.CheckAndApplyAsync();
             if (msg is not null)
@@ -116,19 +122,69 @@ public partial class MainWindow : Window
                 Dispatcher.Invoke(() => ConfirmDialog.Info(this, msg));
             }
         });
-        var miExit = new WinForms.ToolStripMenuItem("終了", null, (_, _) => { _reallyExit = true; Close(); });
+        _miExit = new WinForms.ToolStripMenuItem(Loc.T("S_tray_exit"), null, (_, _) => { _reallyExit = true; Close(); });
 
-        menu.Items.Add(miShow);
+        // 言語切替サブメニュー（日本語 / English）
+        _miLang = new WinForms.ToolStripMenuItem(Loc.T("S_lang_menu"));
+        foreach (var opt in Loc.Available)
+        {
+            var item = new WinForms.ToolStripMenuItem(opt.Display) { Tag = opt.Code, Checked = opt.Code == Loc.Current };
+            item.Click += (_, _) => ChangeLanguage(opt.Code);
+            _miLang.DropDownItems.Add(item);
+        }
+
+        menu.Items.Add(_miShow);
         menu.Items.Add(_trayToggle);
         menu.Items.Add(new WinForms.ToolStripSeparator());
         menu.Items.Add(_miStartBoot);
         menu.Items.Add(_miTray);
         menu.Items.Add(_miAuto);
+        menu.Items.Add(_miLang);
         menu.Items.Add(new WinForms.ToolStripSeparator());
-        menu.Items.Add(miUpdate);
-        menu.Items.Add(miExit);
+        menu.Items.Add(_miUpdate);
+        menu.Items.Add(_miExit);
         _tray.ContextMenuStrip = menu;
         _tray.DoubleClick += (_, _) => ShowFromTray();
+    }
+
+    // 言語を切り替え、設定に保存し、コード側テキストを再適用する。
+    private void ChangeLanguage(string code)
+    {
+        if (code == Loc.Current)
+        {
+            return;
+        }
+        _settings.Data.Language = code;
+        _settings.Save();
+        Loc.SetLanguage(code); // XAMLの{DynamicResource}は自動更新。コード側は下で再適用。
+        ApplyLanguageTexts();
+        Logger.Info($"Language changed to {code}");
+    }
+
+    // コードから設定しているテキスト（トレイ項目・状態表示・開始停止・チップ）を現在言語で再適用する。
+    private void ApplyLanguageTexts()
+    {
+        if (_miShow is not null) _miShow.Text = Loc.T("S_tray_show");
+        if (_miStartBoot is not null) _miStartBoot.Text = Loc.T("S_tray_startboot");
+        if (_miTray is not null) _miTray.Text = Loc.T("S_tray_mintray");
+        if (_miAuto is not null) _miAuto.Text = Loc.T("S_tray_autoact");
+        if (_miUpdate is not null) _miUpdate.Text = Loc.T("S_tray_update");
+        if (_miExit is not null) _miExit.Text = Loc.T("S_tray_exit");
+        if (_miLang is not null)
+        {
+            _miLang.Text = Loc.T("S_lang_menu");
+            foreach (WinForms.ToolStripMenuItem item in _miLang.DropDownItems)
+            {
+                item.Checked = (string?)item.Tag == Loc.Current;
+            }
+        }
+        var toggle = _running ? Loc.T("S_stop") : Loc.T("S_start");
+        if (_trayToggle is not null) _trayToggle.Text = toggle;
+        StartStopButton.Content = toggle;
+        StatusText.Text = _connected ? Loc.T("S_status_connected") : Loc.T("S_status_disconnected");
+        BuildColorChips();     // ツールチップ・組み込み色名を再生成
+        BuildFullPresetChips();
+        _previewWindow?.Activate(); // タイトルは{DynamicResource}で自動更新
     }
 
     private void ApplySettings()
@@ -355,18 +411,18 @@ public partial class MainWindow : Window
             InitCameraDefault();
             if (_cameraIndex < 0)
             {
-                ConfirmDialog.Info(this, "カメラが見つかりません。");
+                ConfirmDialog.Info(this, Loc.T("S_msg_no_camera"));
                 return;
             }
         }
         if (!_engineProc.Start(_cameraIndex))
         {
-            ConfirmDialog.Info(this, "エンジンを起動できませんでした。kuroko-gui.log を確認してください。");
+            ConfirmDialog.Info(this, Loc.T("S_msg_engine_failed"));
             return;
         }
         _running = true;
-        StartStopButton.Content = "停止";
-        if (_trayToggle is not null) _trayToggle.Text = "停止";
+        StartStopButton.Content = Loc.T("S_stop");
+        if (_trayToggle is not null) _trayToggle.Text = Loc.T("S_stop");
         StartPreview();
     }
 
@@ -377,8 +433,8 @@ public partial class MainWindow : Window
         PreviewPlaceholder.Visibility = Visibility.Visible;
         _engineProc.Stop();
         _running = false;
-        StartStopButton.Content = "開始";
-        if (_trayToggle is not null) _trayToggle.Text = "開始";
+        StartStopButton.Content = Loc.T("S_start");
+        if (_trayToggle is not null) _trayToggle.Text = Loc.T("S_start");
     }
 
     // エンジンが共有メモリへ書き出す再着色フレームをプレビュー表示する（会議相手が見る映像と同一）
@@ -446,13 +502,13 @@ public partial class MainWindow : Window
             {
                 Width = 28, Height = 28, CornerRadius = new CornerRadius(6),
                 Background = HexToBrush(p.Hex), BorderBrush = HexToBrush("#4A443C"), BorderThickness = new Thickness(1),
-                Margin = new Thickness(0, 0, 8, 8), Cursor = Cursors.Hand, ToolTip = p.Name, Tag = p,
+                Margin = new Thickness(0, 0, 8, 8), Cursor = Cursors.Hand, ToolTip = Loc.PresetDisplay(p), Tag = p,
             };
             chip.MouseLeftButtonUp += (_, _) => ApplyColorPreset(p);
             chip.MouseRightButtonUp += (_, _) => DeleteColorPreset(p);
             ColorChips.Children.Add(chip);
         }
-        ColorChips.Children.Add(MakeAddTile("現在の髪色を保存", SaveColorPreset));
+        ColorChips.Children.Add(MakeAddTile(Loc.T("S_preset_add_color"), SaveColorPreset));
     }
 
     private void ApplyColorPreset(ColorPresetData p)
@@ -470,7 +526,7 @@ public partial class MainWindow : Window
 
     private void SaveColorPreset()
     {
-        var name = InputDialog.Ask(this, "髪色プリセット名");
+        var name = InputDialog.Ask(this, Loc.T("S_prompt_color_name"));
         if (name is null) return;
         _presets.Data.ColorPresets.Add(new ColorPresetData
         {
@@ -482,7 +538,7 @@ public partial class MainWindow : Window
 
     private void DeleteColorPreset(ColorPresetData p)
     {
-        if (!ConfirmDialog.Confirm(this, $"髪色プリセット「{p.Name}」を削除しますか？"))
+        if (!ConfirmDialog.Confirm(this, string.Format(Loc.T("S_confirm_delete_color"), Loc.PresetDisplay(p))))
         {
             return;
         }
@@ -503,7 +559,7 @@ public partial class MainWindow : Window
             pill.MouseRightButtonUp += (_, _) => DeleteFullPreset(p);
             FullPresetChips.Children.Add(pill);
         }
-        FullPresetChips.Children.Add(MakeAddPill("現在の全設定を保存", SaveFullPreset));
+        FullPresetChips.Children.Add(MakeAddPill(Loc.T("S_preset_add_full"), SaveFullPreset));
     }
 
     private void ApplyFullPreset(FullPresetData p)
@@ -525,7 +581,7 @@ public partial class MainWindow : Window
 
     private void SaveFullPreset()
     {
-        var name = InputDialog.Ask(this, "フルプリセット名");
+        var name = InputDialog.Ask(this, Loc.T("S_prompt_full_name"));
         if (name is null) return;
         _presets.Data.FullPresets.Add(new FullPresetData
         {
@@ -538,7 +594,7 @@ public partial class MainWindow : Window
 
     private void DeleteFullPreset(FullPresetData p)
     {
-        if (!ConfirmDialog.Confirm(this, $"フルプリセット「{p.Name}」を削除しますか？"))
+        if (!ConfirmDialog.Confirm(this, string.Format(Loc.T("S_confirm_delete_full"), p.Name)))
         {
             return;
         }
@@ -573,7 +629,7 @@ public partial class MainWindow : Window
             CornerRadius = new CornerRadius(6),
             Background = HexToBrush("#211D18"), BorderBrush = HexToBrush("#322C25"), BorderThickness = new Thickness(1),
             Padding = new Thickness(12, 6, 12, 6), Margin = new Thickness(0, 0, 8, 8), Cursor = Cursors.Hand,
-            ToolTip = "クリックで適用 / 右クリックで削除",
+            ToolTip = Loc.T("S_chip_tip"),
             Child = new TextBlock { Text = text, Foreground = HexToBrush("#F4F0E9"), FontSize = 13 },
         };
     }
@@ -586,7 +642,7 @@ public partial class MainWindow : Window
             Background = Brushes.Transparent, BorderBrush = HexToBrush("#322C25"), BorderThickness = new Thickness(1),
             Padding = new Thickness(12, 6, 12, 6), Margin = new Thickness(0, 0, 8, 8), Cursor = Cursors.Hand,
             ToolTip = tooltip,
-            Child = new TextBlock { Text = "＋ 保存", Foreground = HexToBrush("#A79F95"), FontSize = 13 },
+            Child = new TextBlock { Text = Loc.T("S_save_pill"), Foreground = HexToBrush("#A79F95"), FontSize = 13 },
         };
         pill.MouseLeftButtonUp += (_, _) => onClick();
         return pill;
@@ -616,8 +672,9 @@ public partial class MainWindow : Window
     {
         Dispatcher.Invoke(() =>
         {
+            _connected = connected;
             StatusDot.Fill = HexToBrush(connected ? "#3E8E63" : "#7C766D");
-            StatusText.Text = connected ? "接続済み" : "エンジン未接続";
+            StatusText.Text = connected ? Loc.T("S_status_connected") : Loc.T("S_status_disconnected");
             if (connected)
             {
                 SyncAll();

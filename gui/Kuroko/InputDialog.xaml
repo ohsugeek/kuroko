@@ -11,8 +11,8 @@
                      Background="{StaticResource SurfaceBrush}" Foreground="{StaticResource TextBrush}"
                      BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CaretBrush="{StaticResource TextBrush}"/>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,16,0,0">
-                <Button Content="キャンセル" Style="{StaticResource GhostButton}" Margin="0,0,8,0" Click="Cancel_Click"/>
-                <Button Content="保存" Style="{StaticResource CtaButton}" Width="80" Click="Ok_Click"/>
+                <Button Content="{DynamicResource S_cancel}" Style="{StaticResource GhostButton}" Margin="0,0,8,0" Click="Cancel_Click"/>
+                <Button Content="{DynamicResource S_save}" Style="{StaticResource CtaButton}" Width="80" Click="Ok_Click"/>
             </StackPanel>
         </StackPanel>
     </Border>

@@ -10,7 +10,7 @@ namespace Kuroko;
 public static class Updater
 {
     // Kuroko の配布元リポジトリ。private の場合はアクセストークンが必要（下の null を置き換える）。
-    private const string RepoUrl = "https://github.com/ohsugeek/zoom-hair-recolor";
+    private const string RepoUrl = "https://github.com/ohsugeek/kuroko";
     private const string? AccessToken = null;
 
     /// <summary>更新を確認し、あれば適用して再起動する。結果メッセージ（再起動する場合は null）を返す。</summary>
@@ -21,12 +21,12 @@ public static class Updater
             var mgr = new UpdateManager(new GithubSource(RepoUrl, AccessToken, prerelease: false));
             if (!mgr.IsInstalled)
             {
-                return "開発ビルドのため、更新確認はスキップされます。";
+                return Loc.T("S_upd_devskip");
             }
             var updates = await mgr.CheckForUpdatesAsync();
             if (updates is null)
             {
-                return "最新版です。";
+                return Loc.T("S_upd_latest");
             }
             await mgr.DownloadUpdatesAsync(updates);
             mgr.ApplyUpdatesAndRestart(updates);
@@ -35,7 +35,7 @@ public static class Updater
         catch (Exception ex)
         {
             Logger.Error("Update check failed", ex);
-            return $"更新確認に失敗しました。\n{ex.Message}";
+            return string.Format(Loc.T("S_upd_failed"), ex.Message);
         }
     }
 }

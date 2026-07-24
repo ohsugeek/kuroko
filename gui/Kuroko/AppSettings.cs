@@ -10,6 +10,7 @@ public class AppSettingsData
     public bool MinimizeToTray { get; set; } = true; // 閉じるボタンでトレイに格納
     public bool AutoActivate { get; set; }        // 仮想カメラが使われたら自動で処理開始
     public string? CameraName { get; set; }       // 前回選んだカメラ名（次回起動時に復元）
+    public string Language { get; set; } = "ja";   // UI言語（"ja" / "en"）
 }
 
 public sealed class SettingsStore

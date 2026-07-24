@@ -12,6 +12,11 @@ public partial class App : Application
     {
         Logger.Init();
 
+        // MainWindow 生成前に言語辞書を読み込む（DynamicResource が初回から正しく解決されるように）。
+        var settings = new SettingsStore();
+        settings.Load();
+        Loc.Init(settings.Data.Language);
+
         // 未処理例外もログに残す（デバッグ時に追えるように）
         DispatcherUnhandledException += (_, args) =>
         {

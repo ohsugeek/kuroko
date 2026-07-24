@@ -36,7 +36,7 @@
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
                     <Ellipse x:Name="StatusDot" Width="8" Height="8" Fill="{StaticResource TextMutedBrush}" VerticalAlignment="Center"/>
-                    <TextBlock x:Name="StatusText" Text="停止中" FontSize="12" Foreground="{StaticResource TextSecondaryBrush}" Margin="6,0,10,0" VerticalAlignment="Center"/>
+                    <TextBlock x:Name="StatusText" Text="{DynamicResource S_status_disconnected}" FontSize="12" Foreground="{StaticResource TextSecondaryBrush}" Margin="6,0,10,0" VerticalAlignment="Center"/>
                     <Button x:Name="MinimizeButton" Style="{StaticResource WindowButton}" Content="&#x2013;" Click="MinimizeButton_Click" WindowChrome.IsHitTestVisibleInChrome="True"/>
                     <Button x:Name="CloseButton" Style="{StaticResource WindowButton}" Content="&#x2715;" Click="CloseButton_Click" WindowChrome.IsHitTestVisibleInChrome="True"/>
                 </StackPanel>
@@ -57,8 +57,8 @@
                 <Border Height="198" CornerRadius="8" Background="#0E0C09" BorderBrush="#2A251F" BorderThickness="1" Margin="0,0,0,12">
                     <Grid>
                         <Image x:Name="PreviewImage" Stretch="Uniform"/>
-                        <TextBlock x:Name="PreviewPlaceholder" Text="「開始」でプレビュー表示" Foreground="{StaticResource TextMutedBrush}" FontSize="12" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        <Button x:Name="ExpandButton" Content="&#x2922; 拡大" Style="{StaticResource GhostButton}"
+                        <TextBlock x:Name="PreviewPlaceholder" Text="{DynamicResource S_preview_placeholder}" Foreground="{StaticResource TextMutedBrush}" FontSize="12" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        <Button x:Name="ExpandButton" Content="{DynamicResource S_expand}" Style="{StaticResource GhostButton}"
                                 HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,6,6,0" Click="ExpandButton_Click"/>
                     </Grid>
                 </Border>
@@ -67,7 +67,7 @@
                 <Grid Margin="0,0,0,10">
                     <Border x:Name="CameraSelector" Padding="12,9" CornerRadius="8" Background="{StaticResource SurfaceBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" Cursor="Hand" MouseLeftButtonUp="CameraSelector_Click">
                         <Grid>
-                            <TextBlock x:Name="CameraNameText" Text="カメラを選択" Foreground="{StaticResource TextSecondaryBrush}" VerticalAlignment="Center"/>
+                            <TextBlock x:Name="CameraNameText" Text="{DynamicResource S_camera_select}" Foreground="{StaticResource TextSecondaryBrush}" VerticalAlignment="Center"/>
                             <TextBlock Text="&#x2304;" Foreground="{StaticResource TextMutedBrush}" HorizontalAlignment="Right" VerticalAlignment="Center"/>
                         </Grid>
                     </Border>
@@ -79,10 +79,10 @@
                 </Grid>
 
                 <!-- 開始/停止 -->
-                <Button x:Name="StartStopButton" Style="{StaticResource CtaButton}" Content="開始" Margin="0,0,0,18" Click="StartStopButton_Click"/>
+                <Button x:Name="StartStopButton" Style="{StaticResource CtaButton}" Content="{DynamicResource S_start}" Margin="0,0,0,18" Click="StartStopButton_Click"/>
 
                 <!-- フルプリセット -->
-                <TextBlock Text="フルプリセット（全設定）" Foreground="{StaticResource TextMutedBrush}" FontSize="11" Margin="0,0,0,6"/>
+                <TextBlock Text="{DynamicResource S_fullpreset_header}" Foreground="{StaticResource TextMutedBrush}" FontSize="11" Margin="0,0,0,6"/>
                 <Border Height="1" Background="{StaticResource BorderBrush}" Margin="0,0,0,12"/>
                 <WrapPanel x:Name="FullPresetChips"/>
             </StackPanel>
@@ -90,13 +90,13 @@
             <!-- ===== 右列: 基本設定 / 詳細設定 ===== -->
             <StackPanel Grid.Column="2">
                 <!-- 基本設定 -->
-                <TextBlock Text="基本設定" Foreground="{StaticResource TextMutedBrush}" FontSize="11" Margin="0,0,0,6"/>
+                <TextBlock Text="{DynamicResource S_basic}" Foreground="{StaticResource TextMutedBrush}" FontSize="11" Margin="0,0,0,6"/>
                 <Border Height="1" Background="{StaticResource BorderBrush}" Margin="0,0,0,12"/>
 
                 <!-- 髪色 -->
                 <StackPanel Margin="0,0,0,14">
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,0,10">
-                        <TextBlock Text="髪色" Foreground="{StaticResource TextSecondaryBrush}" Width="88" VerticalAlignment="Center"/>
+                        <TextBlock Text="{DynamicResource S_hair_color}" Foreground="{StaticResource TextSecondaryBrush}" Width="88" VerticalAlignment="Center"/>
                         <Border x:Name="CurrentSwatch" Width="24" Height="24" CornerRadius="6" Background="#1A1512" BorderBrush="#4A443C" BorderThickness="1"/>
                         <TextBlock x:Name="CurrentHexText" Text="#1A1512" Foreground="{StaticResource TextMutedBrush}" FontSize="12" Margin="10,0,0,0" VerticalAlignment="Center"/>
                     </StackPanel>
@@ -110,7 +110,7 @@
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="40"/>
                     </Grid.ColumnDefinitions>
-                    <TextBlock Grid.Column="0" Text="彩度" Foreground="{StaticResource TextSecondaryBrush}" VerticalAlignment="Center"/>
+                    <TextBlock Grid.Column="0" Text="{DynamicResource S_saturation}" Foreground="{StaticResource TextSecondaryBrush}" VerticalAlignment="Center"/>
                     <Slider Grid.Column="1" x:Name="SatSlider" Minimum="-100" Maximum="100" Value="0" VerticalAlignment="Center"/>
                     <TextBlock Grid.Column="2" x:Name="SatValue" Text="0" Foreground="{StaticResource TextMutedBrush}" FontSize="12" HorizontalAlignment="Right" VerticalAlignment="Center"/>
                 </Grid>
@@ -122,8 +122,8 @@
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="40"/>
                     </Grid.ColumnDefinitions>
-                    <TextBlock Grid.Column="0" Text="発色" Foreground="{StaticResource TextSecondaryBrush}" VerticalAlignment="Center"
-                               ToolTip="小さいほど髪本来の陰影を残して自然に、大きいほど金髪・銀髪など明るい色がはっきり出ます"/>
+                    <TextBlock Grid.Column="0" Text="{DynamicResource S_vividness}" Foreground="{StaticResource TextSecondaryBrush}" VerticalAlignment="Center"
+                               ToolTip="{DynamicResource S_vividness_tip}"/>
                     <Slider Grid.Column="1" x:Name="LiftSlider" Minimum="0" Maximum="100" Value="45" VerticalAlignment="Center"/>
                     <TextBlock Grid.Column="2" x:Name="LiftValue" Text="0.45" Foreground="{StaticResource TextMutedBrush}" FontSize="12" HorizontalAlignment="Right" VerticalAlignment="Center"/>
                 </Grid>
@@ -135,13 +135,13 @@
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="40"/>
                     </Grid.ColumnDefinitions>
-                    <TextBlock Grid.Column="0" Text="明度" Foreground="{StaticResource TextSecondaryBrush}" VerticalAlignment="Center"/>
+                    <TextBlock Grid.Column="0" Text="{DynamicResource S_brightness}" Foreground="{StaticResource TextSecondaryBrush}" VerticalAlignment="Center"/>
                     <Slider Grid.Column="1" x:Name="BriSlider" Minimum="-100" Maximum="100" Value="0" VerticalAlignment="Center"/>
                     <TextBlock Grid.Column="2" x:Name="BriValue" Text="0" Foreground="{StaticResource TextMutedBrush}" FontSize="12" HorizontalAlignment="Right" VerticalAlignment="Center"/>
                 </Grid>
 
                 <!-- 詳細設定 -->
-                <TextBlock Text="詳細設定" Foreground="{StaticResource TextMutedBrush}" FontSize="11" Margin="0,0,0,6"/>
+                <TextBlock Text="{DynamicResource S_detail}" Foreground="{StaticResource TextMutedBrush}" FontSize="11" Margin="0,0,0,6"/>
                 <Border Height="1" Background="{StaticResource BorderBrush}" Margin="0,0,0,12"/>
 
                 <!-- 色相シフト -->
@@ -151,7 +151,7 @@
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="40"/>
                     </Grid.ColumnDefinitions>
-                    <TextBlock Grid.Column="0" Text="色相シフト" Foreground="{StaticResource TextSecondaryBrush}" VerticalAlignment="Center"/>
+                    <TextBlock Grid.Column="0" Text="{DynamicResource S_hue}" Foreground="{StaticResource TextSecondaryBrush}" VerticalAlignment="Center"/>
                     <Slider Grid.Column="1" x:Name="HueSlider" Minimum="0" Maximum="360" Value="0" VerticalAlignment="Center"/>
                     <TextBlock Grid.Column="2" x:Name="HueValue" Text="0" Foreground="{StaticResource TextMutedBrush}" FontSize="12" HorizontalAlignment="Right" VerticalAlignment="Center"/>
                 </Grid>
@@ -163,7 +163,7 @@
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="40"/>
                     </Grid.ColumnDefinitions>
-                    <TextBlock Grid.Column="0" Text="検出しきい値" Foreground="{StaticResource TextSecondaryBrush}" VerticalAlignment="Center"/>
+                    <TextBlock Grid.Column="0" Text="{DynamicResource S_threshold}" Foreground="{StaticResource TextSecondaryBrush}" VerticalAlignment="Center"/>
                     <Slider Grid.Column="1" x:Name="ThresholdSlider" Minimum="0" Maximum="100" Value="26" VerticalAlignment="Center"/>
                     <TextBlock Grid.Column="2" x:Name="ThresholdValue" Text="0.26" Foreground="{StaticResource TextMutedBrush}" FontSize="12" HorizontalAlignment="Right" VerticalAlignment="Center"/>
                 </Grid>
@@ -175,7 +175,7 @@
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="40"/>
                     </Grid.ColumnDefinitions>
-                    <TextBlock Grid.Column="0" Text="色ガイド強度" Foreground="{StaticResource TextSecondaryBrush}" VerticalAlignment="Center"/>
+                    <TextBlock Grid.Column="0" Text="{DynamicResource S_guide}" Foreground="{StaticResource TextSecondaryBrush}" VerticalAlignment="Center"/>
                     <Slider Grid.Column="1" x:Name="GuideSlider" Minimum="0" Maximum="100" Value="70" VerticalAlignment="Center"/>
                     <TextBlock Grid.Column="2" x:Name="GuideValue" Text="0.70" Foreground="{StaticResource TextMutedBrush}" FontSize="12" HorizontalAlignment="Right" VerticalAlignment="Center"/>
                 </Grid>
@@ -187,7 +187,7 @@
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="40"/>
                     </Grid.ColumnDefinitions>
-                    <TextBlock Grid.Column="0" Text="色許容度" Foreground="{StaticResource TextSecondaryBrush}" VerticalAlignment="Center"/>
+                    <TextBlock Grid.Column="0" Text="{DynamicResource S_tolerance}" Foreground="{StaticResource TextSecondaryBrush}" VerticalAlignment="Center"/>
                     <Slider Grid.Column="1" x:Name="TolSlider" Minimum="0" Maximum="100" Value="50" VerticalAlignment="Center"/>
                     <TextBlock Grid.Column="2" x:Name="TolValue" Text="0.50" Foreground="{StaticResource TextMutedBrush}" FontSize="12" HorizontalAlignment="Right" VerticalAlignment="Center"/>
                 </Grid>
@@ -199,13 +199,13 @@
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="40"/>
                     </Grid.ColumnDefinitions>
-                    <TextBlock Grid.Column="0" Text="エッジのぼかし" Foreground="{StaticResource TextSecondaryBrush}" VerticalAlignment="Center"/>
+                    <TextBlock Grid.Column="0" Text="{DynamicResource S_feather}" Foreground="{StaticResource TextSecondaryBrush}" VerticalAlignment="Center"/>
                     <Slider Grid.Column="1" x:Name="SoftSlider" Minimum="0" Maximum="40" Value="15" VerticalAlignment="Center"/>
                     <TextBlock Grid.Column="2" x:Name="SoftValue" Text="1.5" Foreground="{StaticResource TextMutedBrush}" FontSize="12" HorizontalAlignment="Right" VerticalAlignment="Center"/>
                 </Grid>
 
                 <!-- 既定に戻す -->
-                <Button x:Name="ResetButton" Style="{StaticResource GhostButton}" Content="既定に戻す" HorizontalAlignment="Right" Click="ResetButton_Click"/>
+                <Button x:Name="ResetButton" Style="{StaticResource GhostButton}" Content="{DynamicResource S_reset}" HorizontalAlignment="Right" Click="ResetButton_Click"/>
             </StackPanel>
         </Grid>
     </Grid>

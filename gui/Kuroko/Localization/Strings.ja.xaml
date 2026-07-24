@@ -1,0 +1,75 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:sys="clr-namespace:System;assembly=mscorlib">
+    <!-- 日本語。英語版は Strings.en.xaml。キーは共通。 -->
+
+    <!-- 共通 -->
+    <sys:String x:Key="S_ok">OK</sys:String>
+    <sys:String x:Key="S_cancel">キャンセル</sys:String>
+    <sys:String x:Key="S_save">保存</sys:String>
+    <sys:String x:Key="S_delete">削除</sys:String>
+
+    <!-- メインウィンドウ -->
+    <sys:String x:Key="S_status_connected">接続済み</sys:String>
+    <sys:String x:Key="S_status_disconnected">エンジン未接続</sys:String>
+    <sys:String x:Key="S_preview_placeholder">「開始」でプレビュー表示</sys:String>
+    <sys:String x:Key="S_expand">&#x2922; 拡大</sys:String>
+    <sys:String x:Key="S_camera_select">カメラを選択</sys:String>
+    <sys:String x:Key="S_start">開始</sys:String>
+    <sys:String x:Key="S_stop">停止</sys:String>
+    <sys:String x:Key="S_fullpreset_header">フルプリセット（全設定）</sys:String>
+    <sys:String x:Key="S_basic">基本設定</sys:String>
+    <sys:String x:Key="S_detail">詳細設定</sys:String>
+    <sys:String x:Key="S_hair_color">髪色</sys:String>
+    <sys:String x:Key="S_saturation">彩度</sys:String>
+    <sys:String x:Key="S_vividness">発色</sys:String>
+    <sys:String x:Key="S_vividness_tip">小さいほど髪本来の陰影を残して自然に、大きいほど金髪・銀髪など明るい色がはっきり出ます</sys:String>
+    <sys:String x:Key="S_brightness">明度</sys:String>
+    <sys:String x:Key="S_hue">色相シフト</sys:String>
+    <sys:String x:Key="S_threshold">検出しきい値</sys:String>
+    <sys:String x:Key="S_guide">色ガイド強度</sys:String>
+    <sys:String x:Key="S_tolerance">色許容度</sys:String>
+    <sys:String x:Key="S_feather">エッジのぼかし</sys:String>
+    <sys:String x:Key="S_reset">既定に戻す</sys:String>
+
+    <!-- トレイメニュー -->
+    <sys:String x:Key="S_tray_show">表示</sys:String>
+    <sys:String x:Key="S_tray_startboot">Windows起動時に自動開始</sys:String>
+    <sys:String x:Key="S_tray_mintray">閉じたらトレイに格納</sys:String>
+    <sys:String x:Key="S_tray_autoact">仮想カメラ利用時に自動開始・停止</sys:String>
+    <sys:String x:Key="S_tray_update">アップデートを確認</sys:String>
+    <sys:String x:Key="S_tray_exit">終了</sys:String>
+    <sys:String x:Key="S_lang_menu">言語 / Language</sys:String>
+
+    <!-- プリセット -->
+    <sys:String x:Key="S_preset_add_color">現在の髪色を保存</sys:String>
+    <sys:String x:Key="S_preset_add_full">現在の全設定を保存</sys:String>
+    <sys:String x:Key="S_prompt_color_name">髪色プリセット名</sys:String>
+    <sys:String x:Key="S_prompt_full_name">フルプリセット名</sys:String>
+    <sys:String x:Key="S_confirm_delete_color">髪色プリセット「{0}」を削除しますか？</sys:String>
+    <sys:String x:Key="S_confirm_delete_full">フルプリセット「{0}」を削除しますか？</sys:String>
+    <sys:String x:Key="S_chip_tip">クリックで適用 / 右クリックで削除</sys:String>
+    <sys:String x:Key="S_save_pill">&#xFF0B; 保存</sys:String>
+
+    <!-- メッセージ -->
+    <sys:String x:Key="S_msg_no_camera">カメラが見つかりません。</sys:String>
+    <sys:String x:Key="S_msg_engine_failed">エンジンを起動できませんでした。kuroko-gui.log を確認してください。</sys:String>
+
+    <!-- アップデート -->
+    <sys:String x:Key="S_upd_devskip">開発ビルドのため、更新確認はスキップされます。</sys:String>
+    <sys:String x:Key="S_upd_latest">最新版です。</sys:String>
+    <sys:String x:Key="S_upd_failed">更新確認に失敗しました。&#x0A;{0}</sys:String>
+
+    <!-- プレビューウィンドウ -->
+    <sys:String x:Key="S_preview_title">プレビュー</sys:String>
+
+    <!-- 既定の髪色プリセット名 -->
+    <sys:String x:Key="preset_black">黒</sys:String>
+    <sys:String x:Key="preset_blonde">金髪</sys:String>
+    <sys:String x:Key="preset_purple">パープル</sys:String>
+    <sys:String x:Key="preset_silver">シルバー</sys:String>
+    <sys:String x:Key="preset_white">白</sys:String>
+    <sys:String x:Key="preset_milktea">ミルクティー</sys:String>
+    <sys:String x:Key="preset_pink">ピンク</sys:String>
+    <sys:String x:Key="preset_navy">ネイビー</sys:String>
+</ResourceDictionary>

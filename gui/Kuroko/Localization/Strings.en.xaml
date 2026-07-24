@@ -1,0 +1,75 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:sys="clr-namespace:System;assembly=mscorlib">
+    <!-- English. Japanese is Strings.ja.xaml. Keys are shared. -->
+
+    <!-- Common -->
+    <sys:String x:Key="S_ok">OK</sys:String>
+    <sys:String x:Key="S_cancel">Cancel</sys:String>
+    <sys:String x:Key="S_save">Save</sys:String>
+    <sys:String x:Key="S_delete">Delete</sys:String>
+
+    <!-- Main window -->
+    <sys:String x:Key="S_status_connected">Connected</sys:String>
+    <sys:String x:Key="S_status_disconnected">Engine not connected</sys:String>
+    <sys:String x:Key="S_preview_placeholder">Press Start to preview</sys:String>
+    <sys:String x:Key="S_expand">&#x2922; Enlarge</sys:String>
+    <sys:String x:Key="S_camera_select">Select camera</sys:String>
+    <sys:String x:Key="S_start">Start</sys:String>
+    <sys:String x:Key="S_stop">Stop</sys:String>
+    <sys:String x:Key="S_fullpreset_header">Full presets (all settings)</sys:String>
+    <sys:String x:Key="S_basic">Basic</sys:String>
+    <sys:String x:Key="S_detail">Advanced</sys:String>
+    <sys:String x:Key="S_hair_color">Hair color</sys:String>
+    <sys:String x:Key="S_saturation">Saturation</sys:String>
+    <sys:String x:Key="S_vividness">Vividness</sys:String>
+    <sys:String x:Key="S_vividness_tip">Lower keeps the hair's natural shading; higher makes bright colors like blonde or silver stand out.</sys:String>
+    <sys:String x:Key="S_brightness">Brightness</sys:String>
+    <sys:String x:Key="S_hue">Hue shift</sys:String>
+    <sys:String x:Key="S_threshold">Threshold</sys:String>
+    <sys:String x:Key="S_guide">Color guide</sys:String>
+    <sys:String x:Key="S_tolerance">Color tolerance</sys:String>
+    <sys:String x:Key="S_feather">Edge feather</sys:String>
+    <sys:String x:Key="S_reset">Reset to defaults</sys:String>
+
+    <!-- Tray menu -->
+    <sys:String x:Key="S_tray_show">Show</sys:String>
+    <sys:String x:Key="S_tray_startboot">Start on Windows startup</sys:String>
+    <sys:String x:Key="S_tray_mintray">Minimize to tray on close</sys:String>
+    <sys:String x:Key="S_tray_autoact">Auto start/stop with virtual camera</sys:String>
+    <sys:String x:Key="S_tray_update">Check for updates</sys:String>
+    <sys:String x:Key="S_tray_exit">Exit</sys:String>
+    <sys:String x:Key="S_lang_menu">Language / 言語</sys:String>
+
+    <!-- Presets -->
+    <sys:String x:Key="S_preset_add_color">Save current hair color</sys:String>
+    <sys:String x:Key="S_preset_add_full">Save all current settings</sys:String>
+    <sys:String x:Key="S_prompt_color_name">Hair color preset name</sys:String>
+    <sys:String x:Key="S_prompt_full_name">Full preset name</sys:String>
+    <sys:String x:Key="S_confirm_delete_color">Delete hair color preset "{0}"?</sys:String>
+    <sys:String x:Key="S_confirm_delete_full">Delete full preset "{0}"?</sys:String>
+    <sys:String x:Key="S_chip_tip">Click to apply / right-click to delete</sys:String>
+    <sys:String x:Key="S_save_pill">&#xFF0B; Save</sys:String>
+
+    <!-- Messages -->
+    <sys:String x:Key="S_msg_no_camera">No camera found.</sys:String>
+    <sys:String x:Key="S_msg_engine_failed">Failed to start the engine. Check kuroko-gui.log.</sys:String>
+
+    <!-- Update -->
+    <sys:String x:Key="S_upd_devskip">Update check is skipped in development builds.</sys:String>
+    <sys:String x:Key="S_upd_latest">You are on the latest version.</sys:String>
+    <sys:String x:Key="S_upd_failed">Update check failed.&#x0A;{0}</sys:String>
+
+    <!-- Preview window -->
+    <sys:String x:Key="S_preview_title">Preview</sys:String>
+
+    <!-- Default hair color preset names -->
+    <sys:String x:Key="preset_black">Black</sys:String>
+    <sys:String x:Key="preset_blonde">Blonde</sys:String>
+    <sys:String x:Key="preset_purple">Purple</sys:String>
+    <sys:String x:Key="preset_silver">Silver</sys:String>
+    <sys:String x:Key="preset_white">White</sys:String>
+    <sys:String x:Key="preset_milktea">Milk tea</sys:String>
+    <sys:String x:Key="preset_pink">Pink</sys:String>
+    <sys:String x:Key="preset_navy">Navy</sys:String>
+</ResourceDictionary>

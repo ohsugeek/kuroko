@@ -13,6 +13,8 @@ public class ColorPresetData
     public double Bri { get; set; }
     /// <summary>発色: 0=元の明暗を保った自然な仕上がり / 1=金髪・銀髪など明るい色をはっきり出す</summary>
     public double Lift { get; set; } = 0.45;
+    /// <summary>組み込み色のキー(black/blonde/…)。設定されていれば表示名を言語に追従させる。ユーザー作成はnull。</summary>
+    public string? Builtin { get; set; }
 }
 
 /// <summary>フルプリセット: 髪色 + フィルタ系（検出しきい値/色ガイド/許容度/ぼかし）まで含む全設定。</summary>
@@ -52,6 +54,7 @@ public sealed class PresetStore
             {
                 var json = File.ReadAllText(FilePath);
                 Data = JsonSerializer.Deserialize<PresetFile>(json) ?? new PresetFile();
+                MigrateBuiltins();
                 Logger.Info($"Presets loaded: {Data.ColorPresets.Count} color, {Data.FullPresets.Count} full");
             }
             else
@@ -84,22 +87,45 @@ public sealed class PresetStore
     private void SeedDefaults()
     {
         Data = new PresetFile();
-        foreach (var (name, hex) in DefaultColors)
+        foreach (var (key, hex) in DefaultColors)
         {
-            Data.ColorPresets.Add(new ColorPresetData { Name = name, Hex = hex });
+            // Name は言語追従の Builtin で表示するため空でよい（フォールバック用に日本語名を入れておく）
+            Data.ColorPresets.Add(new ColorPresetData { Builtin = key, Name = JaName(key), Hex = hex });
         }
     }
 
-    // BRAND.md のデフォルト髪色（目安値）
-    public static readonly (string Name, string Hex)[] DefaultColors =
+    // 旧バージョン（Builtin 無し・日本語名で保存）のプリセットを組み込みキーに紐付け直す。
+    // これで既存ユーザーの8色も言語切替に追従する。ユーザーが改名した色は一致せずそのまま。
+    private void MigrateBuiltins()
     {
-        ("黒", "#1A1512"),
-        ("金髪", "#C8A45C"),
-        ("パープル", "#8E5BB5"),
-        ("シルバー", "#BCC0C4"),
-        ("白", "#EAE7E1"),
-        ("ミルクティー", "#B08D6A"),
-        ("ピンク", "#DD7BA6"),
-        ("ネイビー", "#2A3A5E"),
+        foreach (var p in Data.ColorPresets)
+        {
+            if (string.IsNullOrEmpty(p.Builtin) && JaToKey.TryGetValue(p.Name, out var key))
+            {
+                p.Builtin = key;
+            }
+        }
+    }
+
+    private static string JaName(string key) =>
+        JaToKey.FirstOrDefault(kv => kv.Value == key).Key ?? key;
+
+    private static readonly Dictionary<string, string> JaToKey = new()
+    {
+        ["黒"] = "black", ["金髪"] = "blonde", ["パープル"] = "purple", ["シルバー"] = "silver",
+        ["白"] = "white", ["ミルクティー"] = "milktea", ["ピンク"] = "pink", ["ネイビー"] = "navy",
+    };
+
+    // BRAND.md のデフォルト髪色（組み込みキー, 目安HEX）
+    public static readonly (string Key, string Hex)[] DefaultColors =
+    {
+        ("black", "#1A1512"),
+        ("blonde", "#C8A45C"),
+        ("purple", "#8E5BB5"),
+        ("silver", "#BCC0C4"),
+        ("white", "#EAE7E1"),
+        ("milktea", "#B08D6A"),
+        ("pink", "#DD7BA6"),
+        ("navy", "#2A3A5E"),
     };
 }

@@ -20,16 +20,16 @@ public partial class ConfirmDialog : Window
     private void Cancel_Click(object sender, RoutedEventArgs e) => DialogResult = false;
 
     /// <summary>確認ダイアログ。OK押下で true。</summary>
-    public static bool Confirm(Window owner, string message, string okText = "削除")
+    public static bool Confirm(Window owner, string message, string? okText = null)
     {
-        var dlg = new ConfirmDialog(message, okText, showCancel: true) { Owner = owner };
+        var dlg = new ConfirmDialog(message, okText ?? Loc.T("S_delete"), showCancel: true) { Owner = owner };
         return dlg.ShowDialog() == true;
     }
 
     /// <summary>通知ダイアログ（OKのみ）。</summary>
     public static void Info(Window owner, string message)
     {
-        var dlg = new ConfirmDialog(message, "OK", showCancel: false) { Owner = owner };
+        var dlg = new ConfirmDialog(message, Loc.T("S_ok"), showCancel: false) { Owner = owner };
         dlg.ShowDialog();
     }
 }
