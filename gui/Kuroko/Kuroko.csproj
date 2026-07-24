@@ -40,4 +40,10 @@
     <PackageReference Include="Velopack" Version="1.2.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <!-- 同梱する UnityCapture 仮想カメラフィルタ(MIT)。出力の vcam-src/ に置き、初回セットアップで登録する -->
+    <None Include="..\..\third_party\UnityCapture\UnityCaptureFilter64.dll" Link="vcam-src\UnityCaptureFilter64.dll" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\..\third_party\UnityCapture\UnityCaptureFilter32.dll" Link="vcam-src\UnityCaptureFilter32.dll" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
 </Project>

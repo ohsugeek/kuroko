@@ -43,13 +43,15 @@ theater: dressed in black, unseen themselves, they make the real performance pos
 - Windows 10 / 11 (x64)
 - A DirectX 12 capable GPU (runs on modest GPUs via DirectML)
 - A webcam
-- The [UnityCapture](https://github.com/schellingb/UnityCapture) virtual-camera driver (MIT)
+
+The virtual-camera driver ([UnityCapture](https://github.com/schellingb/UnityCapture), MIT) is **bundled** — no separate install.
 
 ### Install
 
 1. Download **`Kuroko-win-Setup.exe`** from the [latest release](https://github.com/ohsugeek/kuroko/releases/latest) and run it.
-2. Install [UnityCapture](https://github.com/schellingb/UnityCapture) and run its `Install/Install.bat` as administrator to register "Unity Video Capture".
-3. Launch Kuroko, pick your camera, and click start.
+2. Launch Kuroko. On first run it offers to set up its virtual camera — approve the one-time
+   administrator prompt. (You can also do this later from the tray menu → *Set up virtual camera*.)
+3. Pick your camera and click start.
 4. In your meeting app's camera setting, choose **Unity Video Capture**.
 
 Later versions update themselves from within the app (tray menu → check for updates).
@@ -182,13 +184,15 @@ Kuroko は、Webカメラ映像の髪だけをリアルタイムに塗り替え�
 - Windows 10 / 11（x64）
 - DirectX 12 対応GPU（控えめなGPUでも動作）
 - Webカメラ
-- 仮想カメラドライバ [UnityCapture](https://github.com/schellingb/UnityCapture)（MIT）
+
+仮想カメラドライバ（[UnityCapture](https://github.com/schellingb/UnityCapture)・MIT）は**同梱**しています。個別インストールは不要です。
 
 ### インストール
 
 1. [最新リリース](https://github.com/ohsugeek/kuroko/releases/latest) から **`Kuroko-win-Setup.exe`** を入手して実行
-2. [UnityCapture](https://github.com/schellingb/UnityCapture) を導入し、`Install/Install.bat` を管理者権限で実行して「Unity Video Capture」を登録
-3. Kuroko を起動し、カメラを選んで「開始」
+2. Kuroko を起動。初回に仮想カメラのセットアップを案内するので、**一度だけの管理者許可（UAC）を承認**する
+   （後からトレイメニューの「仮想カメラをセットアップ」でも可能）
+3. カメラを選んで「開始」
 4. 会議アプリのカメラ設定で **Unity Video Capture** を選ぶ
 
 以降のバージョンはアプリ内（トレイメニュー「アップデートを確認」）から自動更新できます。

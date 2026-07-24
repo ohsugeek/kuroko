@@ -60,6 +60,13 @@
     <sys:String x:Key="S_upd_latest">最新版です。</sys:String>
     <sys:String x:Key="S_upd_failed">更新確認に失敗しました。&#x0A;{0}</sys:String>
 
+    <!-- 仮想カメラ(UnityCapture)セットアップ -->
+    <sys:String x:Key="S_vcam_setup">仮想カメラをセットアップ</sys:String>
+    <sys:String x:Key="S_vcam_prompt">Kuroko の仮想カメラをセットアップしますか？&#x0A;会議アプリで「Unity Video Capture」を選べるようになります。&#x0A;（管理者の許可が一度だけ必要です）</sys:String>
+    <sys:String x:Key="S_vcam_ok">仮想カメラをセットアップしました。会議アプリのカメラで「Unity Video Capture」を選んでください。</sys:String>
+    <sys:String x:Key="S_vcam_fail">仮想カメラのセットアップに失敗またはキャンセルされました。トレイメニューから再試行できます。</sys:String>
+    <sys:String x:Key="S_vcam_missing">同梱の仮想カメラファイルが見つかりませんでした。</sys:String>
+
     <!-- プレビューウィンドウ -->
     <sys:String x:Key="S_preview_title">プレビュー</sys:String>
 

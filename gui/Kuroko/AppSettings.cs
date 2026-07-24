@@ -11,6 +11,7 @@ public class AppSettingsData
     public bool AutoActivate { get; set; }        // 仮想カメラが使われたら自動で処理開始
     public string? CameraName { get; set; }       // 前回選んだカメラ名（次回起動時に復元）
     public string Language { get; set; } = "ja";   // UI言語（"ja" / "en"）
+    public bool VcamPromptDeclined { get; set; }    // 仮想カメラの初回セットアップ案内を見送ったか
 }
 
 public sealed class SettingsStore

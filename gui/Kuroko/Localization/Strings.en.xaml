@@ -60,6 +60,13 @@
     <sys:String x:Key="S_upd_latest">You are on the latest version.</sys:String>
     <sys:String x:Key="S_upd_failed">Update check failed.&#x0A;{0}</sys:String>
 
+    <!-- Virtual camera (UnityCapture) setup -->
+    <sys:String x:Key="S_vcam_setup">Set up virtual camera</sys:String>
+    <sys:String x:Key="S_vcam_prompt">Set up Kuroko's virtual camera now?&#x0A;It lets you pick "Unity Video Capture" in your meeting app.&#x0A;(A one-time administrator approval is required.)</sys:String>
+    <sys:String x:Key="S_vcam_ok">Virtual camera is ready. Choose "Unity Video Capture" as the camera in your meeting app.</sys:String>
+    <sys:String x:Key="S_vcam_fail">Virtual camera setup failed or was cancelled. You can retry from the tray menu.</sys:String>
+    <sys:String x:Key="S_vcam_missing">The bundled virtual-camera files were not found.</sys:String>
+
     <!-- Preview window -->
     <sys:String x:Key="S_preview_title">Preview</sys:String>
 

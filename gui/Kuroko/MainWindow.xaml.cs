@@ -31,6 +31,7 @@ public partial class MainWindow : Window
     private WinForms.ToolStripMenuItem? _miStartBoot;
     private WinForms.ToolStripMenuItem? _miTray;
     private WinForms.ToolStripMenuItem? _miAuto;
+    private WinForms.ToolStripMenuItem? _miVcam;
     private WinForms.ToolStripMenuItem? _miUpdate;
     private WinForms.ToolStripMenuItem? _miExit;
     private WinForms.ToolStripMenuItem? _miLang;
@@ -114,6 +115,7 @@ public partial class MainWindow : Window
         _miTray.Click += (_, _) => { _settings.Data.MinimizeToTray = _miTray.Checked; _settings.Save(); };
         _miAuto = new WinForms.ToolStripMenuItem(Loc.T("S_tray_autoact")) { CheckOnClick = true };
         _miAuto.Click += (_, _) => { _settings.Data.AutoActivate = _miAuto.Checked; _settings.Save(); ApplyAutoActivate(); };
+        _miVcam = new WinForms.ToolStripMenuItem(Loc.T("S_vcam_setup"), null, (_, _) => SetupVirtualCamera(silentIfOk: false));
         _miUpdate = new WinForms.ToolStripMenuItem(Loc.T("S_tray_update"), null, async (_, _) =>
         {
             var msg = await Updater.CheckAndApplyAsync();
@@ -141,6 +143,7 @@ public partial class MainWindow : Window
         menu.Items.Add(_miAuto);
         menu.Items.Add(_miLang);
         menu.Items.Add(new WinForms.ToolStripSeparator());
+        menu.Items.Add(_miVcam);
         menu.Items.Add(_miUpdate);
         menu.Items.Add(_miExit);
         _tray.ContextMenuStrip = menu;
@@ -168,6 +171,7 @@ public partial class MainWindow : Window
         if (_miStartBoot is not null) _miStartBoot.Text = Loc.T("S_tray_startboot");
         if (_miTray is not null) _miTray.Text = Loc.T("S_tray_mintray");
         if (_miAuto is not null) _miAuto.Text = Loc.T("S_tray_autoact");
+        if (_miVcam is not null) _miVcam.Text = Loc.T("S_vcam_setup");
         if (_miUpdate is not null) _miUpdate.Text = Loc.T("S_tray_update");
         if (_miExit is not null) _miExit.Text = Loc.T("S_tray_exit");
         if (_miLang is not null)
@@ -185,6 +189,55 @@ public partial class MainWindow : Window
         BuildColorChips();     // ツールチップ・組み込み色名を再生成
         BuildFullPresetChips();
         _previewWindow?.Activate(); // タイトルは{DynamicResource}で自動更新
+    }
+
+    // 仮想カメラ(UnityCapture)が未セットアップなら、初回だけ案内する。
+    // 見送られたら以降は自動案内しない(トレイの「仮想カメラをセットアップ」から手動で可能)。
+    private void MaybePromptVirtualCamera()
+    {
+        if (VirtualCamInstaller.IsInstalled() || _settings.Data.VcamPromptDeclined)
+        {
+            return;
+        }
+        if (!VirtualCamInstaller.BundlePresent())
+        {
+            Logger.Error("Skipping vcam prompt: bundle not present");
+            return;
+        }
+        bool ok = ConfirmDialog.Confirm(this, Loc.T("S_vcam_prompt"), Loc.T("S_vcam_setup"));
+        if (ok)
+        {
+            SetupVirtualCamera(silentIfOk: false);
+        }
+        else
+        {
+            _settings.Data.VcamPromptDeclined = true; // 見送りを記録して次回から案内しない
+            _settings.Save();
+        }
+    }
+
+    // 仮想カメラを登録(修復)する。UAC が入る。結果を通知する。
+    private void SetupVirtualCamera(bool silentIfOk)
+    {
+        if (!VirtualCamInstaller.BundlePresent())
+        {
+            ConfirmDialog.Info(this, Loc.T("S_vcam_missing"));
+            return;
+        }
+        bool ok = VirtualCamInstaller.Install();
+        if (ok)
+        {
+            _settings.Data.VcamPromptDeclined = false;
+            _settings.Save();
+            if (!silentIfOk)
+            {
+                ConfirmDialog.Info(this, Loc.T("S_vcam_ok"));
+            }
+        }
+        else
+        {
+            ConfirmDialog.Info(this, Loc.T("S_vcam_fail"));
+        }
     }
 
     private void ApplySettings()
@@ -290,6 +343,12 @@ public partial class MainWindow : Window
         if (_startHidden)
         {
             Hide();
+        }
+        else
+        {
+            // 画面表示後に、仮想カメラの初回セットアップを案内する(トレイ起動時は出さない)
+            Dispatcher.BeginInvoke(new Action(MaybePromptVirtualCamera),
+                System.Windows.Threading.DispatcherPriority.ApplicationIdle);
         }
     }
 
